@@ -31,7 +31,7 @@ def unary_coding(val):
     
     Example:
     val: 5
-    unary_coding(val): 000001
+    unary_coding(val): '000001'
     """
     
     unary_string = ''
@@ -41,6 +41,14 @@ def unary_coding(val):
     return unary_string
 
 def elias_gamma_encoding(val):
+    """
+    Params:
+    val: An Integer on which elias gamma encoding has to be performed
+    
+    Example:
+    val: 12
+    elias_gamma_encoding(val): '0001100'
+    """
     offset = str(bin(val))[3:]
     selector = unary_coding(len(offset))
     return selector + offset
