@@ -52,3 +52,58 @@ def elias_gamma_encoding(val):
     offset = str(bin(val))[3:]
     selector = unary_coding(len(offset))
     return selector + offset
+
+def elias_delta_encoding(val):
+    """
+    Params:
+    val: An Integer on which elias delta encoding has to be performed
+    
+    Example:
+    val: 12
+    elias_gamma_encoding(val): '00100100'
+    """
+    n = 1; temp = 2
+    while temp < val:
+        temp *= 2
+        n += 1
+    n -= 1
+    
+    bin_format = '{0:0'+f'{n}'+'b}'
+    return elias_gamma_encoding(n + 1) + bin_format.format(val - pow(2, n))
+
+def get_vb_encode(val, rems = []):
+    """
+    Purpose:
+    Helper function to get the VBencode of a value
+    
+    Params:
+    val: An integer which has to be encoded
+    rems: Initially empty, stores the individual remainders
+    
+    Example:
+    val: 99
+    rems: []
+    get_vb_encode(val, rems): [99]
+    """
+    if val < pow(2, 7):
+        return [val] + rems
+    else:
+        return get_vb_encode(val // pow(2, 7), rems = [val % pow(2, 7)] + rems)
+
+def variable_byte_encoding(postings):
+    gaps = [postings[0]]; byte_stream = []
+    gaps = gaps + [postings[i] - postings[i-1] for i in range(1, len(postings))]
+    for n in gaps:
+        vb_encode = get_vb_encode(n)
+        byte_encode = []
+        for i in range(len(vb_encode)):
+            if i == len(vb_encode) - 1:
+                byte_encode.append('1' + str('{0:08b}'.format(vb_encode[i]))[1:])
+            else:
+                byte_encode.append(str('{0:08b}'.format(vb_encode[i])))
+        byte_stream.append(byte_encode)
+        
+    for b in byte_stream:
+        for bb in b:
+            print(bb, end=" ")
+        print("  ", end="")
