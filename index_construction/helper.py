@@ -71,6 +71,18 @@ def elias_delta_encoding(val):
     bin_format = '{0:0'+f'{n}'+'b}'
     return elias_gamma_encoding(n + 1) + bin_format.format(val - pow(2, n))
 
+def elias_delta_decoding(bin_string):
+    L = 0; index = 0
+    for i in range(len(bin_string)):
+        if bin_string[i] == '1':
+            index = i
+            break
+        else:
+            L += 1
+            
+    bin_decode = '0b1' + bin_string[index + L + 1:]
+    return int(bin_decode, 2)
+
 def get_vb_encode(val, rems = []):
     """
     Purpose:
@@ -107,3 +119,4 @@ def variable_byte_encoding(postings):
         for bb in b:
             print(bb, end=" ")
         print("  ", end="")
+
